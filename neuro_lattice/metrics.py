@@ -2,6 +2,7 @@ import numpy as np
 import networkx as nx
 from scipy.sparse.linalg import eigsh
 
+
 def compute_coherence(lattice):
     """
     Compute coherence as the inverse variance of edge weights.
@@ -9,6 +10,7 @@ def compute_coherence(lattice):
     """
     weights = [d.get("weight", 1.0) for _, _, d in lattice.edges(data=True)]
     return 1.0 / (np.var(weights) + 1e-8)
+
 
 def compute_strain(lattice):
     """
@@ -46,6 +48,7 @@ class MetricsCalculator:
             "drift": _calculate_drift(lattice),
         }
 
+
 def node_visit_imbalance(visit_counts):
     """
     Imbalance = max node visits / mean visits.
@@ -55,18 +58,23 @@ def node_visit_imbalance(visit_counts):
     visits = np.array(list(visit_counts.values()))
     return visits.max() / (visits.mean() + 1e-8)
 
+
 def spectral_symmetry(lattice):
     """
     Checks for Laplacian eigenvalue degeneracy (structural symmetry).
     Returns (eigenvalues, symmetry_passed).
+    - Uses SciPy eigsh for performance on larger graphs.
+    - Ensures directed graphs are symmetrized first.
     """
-    L = nx.laplacian_matrix(lattice)
+    G = nx.Graph(lattice)  # Ensure symmetry for Laplacian
+    L = nx.laplacian_matrix(G)
     num_eigs = min(L.shape[0] - 1, 10)
     if num_eigs <= 0:
         return np.array([]), True
     eigvals = np.sort(eigsh(L, k=num_eigs, which="SM", return_eigenvectors=False))
     symmetry = len(eigvals) >= 4 and np.isclose(eigvals[1:4], eigvals[1], atol=1e-12).all()
     return eigvals, symmetry
+
 
 def coherence_report(lattice, visit_counts):
     """
@@ -78,5 +86,5 @@ def coherence_report(lattice, visit_counts):
         "strain": compute_strain(lattice),
         "imbalance": node_visit_imbalance(visit_counts),
         "spectral_symmetry_ok": symmetry,
-        "laplacian_eigs": eigvals[:10]  # First 10 eigenvalues for debugging
+        "laplacian_eigs": eigvals[:10],  # First 10 eigenvalues for debugging
     }
