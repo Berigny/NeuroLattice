@@ -1,13 +1,14 @@
+import networkx as nx
 from neuro_lattice import CognitiveNetwork
 
 
 def test_cognitive_network_basic():
-    network = CognitiveNetwork()
-    network.add_concept("A")
-    network.add_concept("B")
-    network.add_relation("A", "B", weight=0.5)
+    cn = CognitiveNetwork(lattice_type="tetrahedral", size=1.0)
+    graph = cn.get_network()
 
-    adj = network.adjacency_matrix()
+    # Graph should be a directed graph with the expected number of nodes
+    assert isinstance(graph, nx.DiGraph)
+    assert len(graph) == 10
 
-    assert adj.shape == (2, 2)
-    assert adj[0, 1] == 0.5
+    # Node positions should be available from the builder
+    assert graph.nodes[1]["pos"] == (1.0, 0.0, 0.0)
