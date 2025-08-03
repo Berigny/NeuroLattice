@@ -5,6 +5,7 @@ from neuro_lattice.metrics import (
     calculate_strain,
     calculate_coherence,
     spectral_symmetry,
+    node_visit_imbalance,
 )
 
 
@@ -50,3 +51,7 @@ def test_spectral_symmetry_non_degenerate():
     expected = np.sort(np.linalg.eigvalsh(nx.laplacian_matrix(g).toarray()))[: len(eigvals)]
     assert np.allclose(eigvals, expected)
     assert not symmetry
+
+
+def test_node_visit_imbalance_empty():
+    assert node_visit_imbalance({}) == 0.0
