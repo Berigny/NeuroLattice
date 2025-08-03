@@ -13,7 +13,6 @@ setup(
         "opencv-python",
         "numpy",
         "scikit-image",
-        "scikit-learn",
-        "scipy"
+        "scikit-learn"
     ],
 )
