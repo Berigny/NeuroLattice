@@ -1,28 +1,31 @@
-import pytest
+import math
+import networkx as nx
 from neuro_lattice.metrics import calculate_strain, calculate_coherence
 
+
+def build_lattice():
+    g = nx.Graph()
+    g.add_edge(0, 1, weight=1.0)
+    g.add_edge(1, 2, weight=3.0)
+    return g
+
+
 def test_calculate_strain():
-    # Test case for strain calculation
-    lattice_data = [...]  # Replace with appropriate test data
-    expected_strain = ...  # Replace with expected strain value
-    assert calculate_strain(lattice_data) == expected_strain
+    g = build_lattice()
+    assert calculate_strain(g) == 2.0
+
 
 def test_calculate_coherence():
-    # Test case for coherence calculation
-    lattice_data = [...]  # Replace with appropriate test data
-    expected_coherence = ...  # Replace with expected coherence value
-    assert calculate_coherence(lattice_data) == expected_coherence
+    g = build_lattice()
+    expected = 1.0 / (1.0 + 1e-8)
+    assert math.isclose(calculate_coherence(g), expected, rel_tol=1e-6)
+
 
 def test_strain_threshold():
-    # Test case to check if strain is below a certain threshold
-    lattice_data = [...]  # Replace with appropriate test data
-    threshold = ...  # Define a threshold value
-    strain = calculate_strain(lattice_data)
-    assert strain < threshold, f"Strain {strain} exceeds threshold {threshold}"
+    g = build_lattice()
+    assert calculate_strain(g) < 5.0
+
 
 def test_coherence_threshold():
-    # Test case to check if coherence is above a certain threshold
-    lattice_data = [...]  # Replace with appropriate test data
-    threshold = ...  # Define a threshold value
-    coherence = calculate_coherence(lattice_data)
-    assert coherence > threshold, f"Coherence {coherence} is below threshold {threshold}"
+    g = build_lattice()
+    assert calculate_coherence(g) > 0.5
