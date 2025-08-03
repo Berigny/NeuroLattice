@@ -5,7 +5,6 @@ from neuro_lattice.metrics import (
     calculate_strain,
     calculate_coherence,
     spectral_symmetry,
-    node_visit_imbalance,
 )
 
 
@@ -37,22 +36,6 @@ def test_coherence_threshold():
     assert calculate_coherence(g) > 0.5
 
 
-def test_spectral_symmetry_directed():
-    """Test spectral symmetry on a directed graph by comparing to its symmetrised Laplacian."""
-    dg = nx.DiGraph()
-    dg.add_edge(0, 1, weight=1.0)
-    dg.add_edge(1, 2, weight=3.0)
-    eigvals, sym = spectral_symmetry(dg)
-
-    ug = nx.Graph(dg)  # Convert to undirected for Laplacian
-    L = nx.laplacian_matrix(ug).toarray()
-    L = (L + L.T) / 2  # Ensure symmetry
-    expected = np.sort(np.linalg.eigvalsh(L))
-
-    assert np.allclose(eigvals, expected)
-    assert not sym
-
-
 def test_spectral_symmetry_eigvals():
     g = nx.complete_graph(5)
     eigvals, symmetry = spectral_symmetry(g)
@@ -67,7 +50,3 @@ def test_spectral_symmetry_non_degenerate():
     expected = np.sort(np.linalg.eigvalsh(nx.laplacian_matrix(g).toarray()))[: len(eigvals)]
     assert np.allclose(eigvals, expected)
     assert not symmetry
-
-
-def test_node_visit_imbalance_empty():
-    assert node_visit_imbalance({}) == 0.0

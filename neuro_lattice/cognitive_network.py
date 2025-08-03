@@ -15,7 +15,7 @@ class CognitiveNetwork:
     lattice_type:
         Shape of lattice to build. Currently ``'tetrahedral'`` or ``'cubic'``.
     size:
-        Scaling factor for node positions and edge weights in the lattice.
+        Scaling factor passed to :class:`~neuro_lattice.lattice_builder.LatticeBuilder`.
     """
 
     def __init__(self, lattice_type: str = "tetrahedral", size: float = 1.0) -> None:
@@ -23,7 +23,7 @@ class CognitiveNetwork:
         self.network: nx.DiGraph = self.builder.build_lattice()
         self._assign_goals()
         self.router = RoutingEngine(self.network)
-        self.concepts: nx.DiGraph = nx.DiGraph()
+        self.concept_graph: nx.DiGraph = nx.DiGraph()
 
     # ------------------------------------------------------------------
     def _assign_goals(self) -> None:
@@ -55,16 +55,16 @@ class CognitiveNetwork:
         self.router = RoutingEngine(self.network)
 
     def add_concept(self, concept: Any) -> None:
-        """Add a standalone concept node to the cognitive network."""
-        self.concepts.add_node(concept)
+        """Add a standalone concept node to the concept graph."""
+        self.concept_graph.add_node(concept)
 
     def add_relation(self, src: Any, dst: Any, weight: float = 1.0) -> None:
         """Create a directed weighted relation between concepts."""
-        self.concepts.add_edge(src, dst, weight=weight)
+        self.concept_graph.add_edge(src, dst, weight=weight)
 
     def adjacency_matrix(self) -> np.ndarray:
         """Return the adjacency matrix of the concept graph."""
-        return nx.to_numpy_array(self.concepts, weight="weight")
+        return nx.to_numpy_array(self.concept_graph, weight="weight")
 
     def route_packets(self, packets: Iterable[Dict[str, Any]], max_steps: int = 100) -> List[Dict[str, Any]]:
         """Route packets through the lattice via :class:`~neuro_lattice.routing_engine.RoutingEngine`."""
