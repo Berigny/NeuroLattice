@@ -1,6 +1,6 @@
 import math
 import networkx as nx
-from neuro_lattice.metrics import calculate_strain, calculate_coherence
+from neuro_lattice.metrics import calculate_strain, calculate_coherence, node_visit_imbalance
 
 
 def build_lattice():
@@ -29,3 +29,7 @@ def test_strain_threshold():
 def test_coherence_threshold():
     g = build_lattice()
     assert calculate_coherence(g) > 0.5
+
+
+def test_node_visit_imbalance_empty():
+    assert node_visit_imbalance({}) == 0.0

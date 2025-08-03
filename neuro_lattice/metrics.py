@@ -49,6 +49,8 @@ def node_visit_imbalance(visit_counts):
     """
     Imbalance = max node visits / mean visits.
     """
+    if not visit_counts:
+        return 0.0
     visits = np.array(list(visit_counts.values()))
     return visits.max() / (visits.mean() + 1e-8)
 
