@@ -1,6 +1,5 @@
 import numpy as np
 import networkx as nx
-from scipy.sparse.csgraph import laplacian
 
 def compute_coherence(lattice):
     """
@@ -58,8 +57,8 @@ def spectral_symmetry(lattice):
     Checks for Laplacian eigenvalue degeneracy (structural symmetry).
     Returns (eigenvalues, symmetry_passed).
     """
-    L = laplacian(nx.adjacency_matrix(lattice))
-    eigvals = np.sort(np.real(np.linalg.eigvals(L)))
+    L = nx.laplacian_matrix(lattice).toarray()
+    eigvals = np.sort(np.linalg.eigvalsh(L))
     symmetry = np.isclose(eigvals[1:4], eigvals[1], atol=1e-12)
     return eigvals, symmetry.all()
 
