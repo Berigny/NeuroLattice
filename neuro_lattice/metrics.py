@@ -57,7 +57,9 @@ def spectral_symmetry(lattice):
     Checks for Laplacian eigenvalue degeneracy (structural symmetry).
     Returns (eigenvalues, symmetry_passed).
     """
-    L = nx.laplacian_matrix(lattice).toarray()
+    G = nx.Graph(lattice)
+    L = nx.laplacian_matrix(G).toarray()
+    L = (L + L.T) / 2
     eigvals = np.sort(np.linalg.eigvalsh(L))
     symmetry = np.isclose(eigvals[1:4], eigvals[1], atol=1e-12)
     return eigvals, symmetry.all()
