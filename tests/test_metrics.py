@@ -1,6 +1,12 @@
 import math
+import numpy as np
 import networkx as nx
-from neuro_lattice.metrics import calculate_strain, calculate_coherence, node_visit_imbalance
+from neuro_lattice.metrics import (
+    calculate_strain,
+    calculate_coherence,
+    spectral_symmetry,
+    node_visit_imbalance,
+)
 
 
 def build_lattice():
@@ -29,6 +35,22 @@ def test_strain_threshold():
 def test_coherence_threshold():
     g = build_lattice()
     assert calculate_coherence(g) > 0.5
+
+
+def test_spectral_symmetry_eigvals():
+    g = nx.complete_graph(5)
+    eigvals, symmetry = spectral_symmetry(g)
+    expected = np.sort(np.linalg.eigvalsh(nx.laplacian_matrix(g).toarray()))[: len(eigvals)]
+    assert np.allclose(eigvals, expected)
+    assert symmetry
+
+
+def test_spectral_symmetry_non_degenerate():
+    g = nx.path_graph(6)
+    eigvals, symmetry = spectral_symmetry(g)
+    expected = np.sort(np.linalg.eigvalsh(nx.laplacian_matrix(g).toarray()))[: len(eigvals)]
+    assert np.allclose(eigvals, expected)
+    assert not symmetry
 
 
 def test_node_visit_imbalance_empty():
