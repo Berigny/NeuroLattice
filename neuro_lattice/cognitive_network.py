@@ -14,7 +14,7 @@ class CognitiveNetwork:
     lattice_type:
         Shape of lattice to build. Currently ``'tetrahedral'`` or ``'cubic'``.
     size:
-        Scaling factor passed to :class:`~neuro_lattice.lattice_builder.LatticeBuilder`.
+        Scaling factor for node positions and edge weights in the lattice.
     """
 
     def __init__(self, lattice_type: str = "tetrahedral", size: float = 1.0) -> None:
