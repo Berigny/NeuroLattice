@@ -1,5 +1,5 @@
 import networkx as nx
-from neuro_lattice.perturbations import PerturbationInjector
+from neuro_lattice import PerturbationEngine
 from neuro_lattice.metrics import MetricsCalculator
 
 
@@ -17,7 +17,7 @@ def recover_lattice(lattice):
 
 def test_recovery_mechanism():
     lattice = create_test_lattice()
-    injector = PerturbationInjector()
+    injector = PerturbationEngine()
     injector.inject_perturbation(lattice, perturbation_type="adversarial")
     metrics_before = MetricsCalculator.calculate_metrics(lattice)
     recover_lattice(lattice)
