@@ -1,25 +1,49 @@
-def calculate_strain(lattice):
-    # Placeholder function to calculate strain in the lattice
-    # Implement the actual strain calculation logic here
-    pass
+import numpy as np
+import networkx as nx
+from scipy.sparse.csgraph import laplacian
 
-def calculate_coherence(lattice):
-    # Placeholder function to calculate coherence in the lattice
-    # Implement the actual coherence calculation logic here
-    pass
+def compute_coherence(lattice):
+    """
+    Compute coherence as the inverse variance of edge weights.
+    Higher = more coherent.
+    """
+    weights = [d.get("weight", 1.0) for _, _, d in lattice.edges(data=True)]
+    return 1.0 / (np.var(weights) + 1e-8)
 
-def calculate_drift(lattice, reference):
-    # Placeholder function to calculate drift measures
-    # Implement the actual drift calculation logic here
-    pass
+def compute_strain(lattice):
+    """
+    Strain = sum of deviations of edge weights from their mean.
+    """
+    weights = [d.get("weight", 1.0) for _, _, d in lattice.edges(data=True)]
+    mean_weight = np.mean(weights)
+    return sum(abs(w - mean_weight) for w in weights)
 
-def evaluate_metrics(lattice, reference):
-    strain = calculate_strain(lattice)
-    coherence = calculate_coherence(lattice)
-    drift = calculate_drift(lattice, reference)
-    
+def node_visit_imbalance(visit_counts):
+    """
+    Imbalance = max node visits / mean visits.
+    """
+    visits = np.array(list(visit_counts.values()))
+    return visits.max() / (visits.mean() + 1e-8)
+
+def spectral_symmetry(lattice):
+    """
+    Checks for Laplacian eigenvalue degeneracy (structural symmetry).
+    Returns (eigenvalues, symmetry_passed).
+    """
+    L = laplacian(nx.adjacency_matrix(lattice))
+    eigvals = np.sort(np.real(np.linalg.eigvals(L)))
+    symmetry = np.isclose(eigvals[1:4], eigvals[1], atol=1e-12)
+    return eigvals, symmetry.all()
+
+def coherence_report(lattice, visit_counts):
+    """
+    Returns a dictionary with all core metrics.
+    """
+    eigvals, symmetry = spectral_symmetry(lattice)
     return {
-        'strain': strain,
-        'coherence': coherence,
-        'drift': drift
+        "coherence": compute_coherence(lattice),
+        "strain": compute_strain(lattice),
+        "imbalance": node_visit_imbalance(visit_counts),
+        "spectral_symmetry_ok": symmetry,
+        "laplacian_eigs": eigvals[:10]  # First 10 eigenvalues for debugging
     }
