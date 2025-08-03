@@ -1,1 +1,1 @@
-# This file is intentionally left blank.
+from .lattice_builder import LatticeBuilder

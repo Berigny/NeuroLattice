@@ -1,0 +1,17 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="neuro_lattice",
+    version="0.1.0",
+    description="A sandbox for tetrahedral and cubic cognitive lattices with perturbation testing",
+    author="David Berigny",
+    packages=find_packages(),
+    install_requires=[
+        "networkx",
+        "numpy",
+        "matplotlib",
+        "pandas",
+        "scipy"
+    ],
+    python_requires=">=3.8",
+)
