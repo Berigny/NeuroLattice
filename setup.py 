@@ -3,15 +3,17 @@ from setuptools import setup, find_packages
 setup(
     name="neuro_lattice",
     version="0.1.0",
-    description="A sandbox for tetrahedral and cubic cognitive lattices with perturbation testing",
+    description="Symmetry-driven coherence framework for next-gen intelligence",
     author="David Berigny",
-    packages=find_packages(),
+    packages=find_packages(include=["neuro_lattice", "neuro_lattice.*"]),
     install_requires=[
         "networkx",
-        "numpy",
         "matplotlib",
         "pandas",
+        "opencv-python",
+        "numpy",
+        "scikit-image",
+        "scikit-learn",
         "scipy"
     ],
-    python_requires=">=3.8",
 )
