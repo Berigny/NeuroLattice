@@ -1,46 +1,48 @@
-"""Cognitive network utilities.
+"""Cognitive network construction.
 
-This module defines a minimal :class:`CognitiveNetwork` used throughout the
-project.  It provides a lightweight wrapper around a directed NetworkX graph
-so that experiments can easily add concepts and relationships between them.
-
-The original repository only shipped an empty placeholder file which caused
-imports such as ``from neuro_lattice import CognitiveNetwork`` to fail at
-runtime.  The implementation below establishes a small but functional API that
-is sufficient for tests and examples while remaining simple.
+This module wraps :class:`~neuro_lattice.lattice_builder.LatticeBuilder` and
+annotates the resulting graph with per-node processing goals and confidence
+thresholds. The thresholds are consumed by :class:`~neuro_lattice.routing_engine.RoutingEngine`
+to model System 1 versus System 2 processing.
 """
 
 from __future__ import annotations
 
-from typing import Any
-
 import networkx as nx
+
+from .lattice_builder import LatticeBuilder
 
 
 class CognitiveNetwork:
-    """A basic directed network of concepts and their relationships.
+    """Build and expose the cognitive lattice graph."""
 
-    Concepts are represented as nodes in a :class:`networkx.DiGraph` and
-    relationships are stored as weighted edges.  The class exposes convenience
-    methods for adding concepts and relations as well as retrieving the
-    underlying adjacency matrix for analysis.
-    """
+    def __init__(self):
+        builder = LatticeBuilder()
+        self.graph: nx.DiGraph = builder.build_lattice()
+        self._assign_goals()
 
-    def __init__(self) -> None:
-        self.graph = nx.DiGraph()
+    # ------------------------------------------------------------------
+    def _assign_goals(self) -> None:
+        """Assign processing goals and confidence thresholds to nodes."""
 
-    def add_concept(self, concept: Any) -> None:
-        """Add a concept node to the network."""
+        node_goals = {
+            0: {"goal": "fast_reading", "threshold": 0.5},
+            1: {"goal": "coarse_eval", "threshold": 0.6},
+            2: {"goal": "pattern_match", "threshold": 0.7},
+            3: {"goal": "fast_decision", "threshold": 0.8},
+            4: {"goal": "deep_reading", "threshold": 0.85},
+            5: {"goal": "integration", "threshold": 0.9},
+            6: {"goal": "critical_eval", "threshold": 0.95},
+            7: {"goal": "deliberate_decision", "threshold": 0.95},
+            "IC": {"goal": "integration_hub", "threshold": 1.0},
+            "EC": {"goal": "entry_exit", "threshold": 0.0},
+        }
 
-        self.graph.add_node(concept)
+        nx.set_node_attributes(self.graph, node_goals)
 
-    def add_relation(self, source: Any, target: Any, weight: float = 1.0) -> None:
-        """Create a weighted directed relation between two concepts."""
+    # ------------------------------------------------------------------
+    def get_network(self) -> nx.DiGraph:
+        """Return the annotated network graph."""
 
-        self.graph.add_edge(source, target, weight=weight)
-
-    def adjacency_matrix(self):
-        """Return the adjacency matrix of the cognitive network."""
-
-        return nx.to_numpy_array(self.graph, weight="weight")
+        return self.graph
 
