@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Iterable, List, Dict, Any
+import numpy as np
 import networkx as nx
 
 from .lattice_builder import LatticeBuilder
@@ -22,6 +23,7 @@ class CognitiveNetwork:
         self.network: nx.DiGraph = self.builder.build_lattice()
         self._assign_goals()
         self.router = RoutingEngine(self.network)
+        self.concept_graph: nx.DiGraph = nx.DiGraph()
 
     # ------------------------------------------------------------------
     def _assign_goals(self) -> None:
@@ -51,6 +53,18 @@ class CognitiveNetwork:
         self.network = self.builder.build_lattice()
         self._assign_goals()
         self.router = RoutingEngine(self.network)
+
+    def add_concept(self, concept: Any) -> None:
+        """Add a standalone concept node to the concept graph."""
+        self.concept_graph.add_node(concept)
+
+    def add_relation(self, src: Any, dst: Any, weight: float = 1.0) -> None:
+        """Create a directed weighted relation between concepts."""
+        self.concept_graph.add_edge(src, dst, weight=weight)
+
+    def adjacency_matrix(self) -> np.ndarray:
+        """Return the adjacency matrix of the concept graph."""
+        return nx.to_numpy_array(self.concept_graph, weight="weight")
 
     def route_packets(self, packets: Iterable[Dict[str, Any]], max_steps: int = 100) -> List[Dict[str, Any]]:
         """Route packets through the lattice via :class:`~neuro_lattice.routing_engine.RoutingEngine`."""
