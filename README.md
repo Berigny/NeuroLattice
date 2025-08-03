@@ -14,6 +14,8 @@ NeuroLattice is a Python package designed for simulating and analyzing lattice s
 
 A live demonstration of the NeuroLattice functionality can be found in the Jupyter notebook located in the `notebooks` directory. The notebook showcases the process of building a lattice, applying perturbations, measuring outcomes, and visualizing results.
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YOUR_USERNAME/NeuroLattice/blob/main/notebooks/neuro_lattice_demo.ipynb)
+
 ## Installation
 
 To install the required dependencies, run:
