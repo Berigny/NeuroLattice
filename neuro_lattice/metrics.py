@@ -18,6 +18,34 @@ def compute_strain(lattice):
     mean_weight = np.mean(weights)
     return sum(abs(w - mean_weight) for w in weights)
 
+
+def calculate_coherence(lattice):
+    """Public wrapper for :func:`compute_coherence`."""
+    return compute_coherence(lattice)
+
+
+def calculate_strain(lattice):
+    """Public wrapper for :func:`compute_strain`."""
+    return compute_strain(lattice)
+
+
+def _calculate_drift(lattice):
+    """Simple drift metric based on deviation of mean edge weight from 1."""
+    weights = [d.get("weight", 1.0) for _, _, d in lattice.edges(data=True)]
+    return abs(np.mean(weights) - 1.0)
+
+
+class MetricsCalculator:
+    """Utility class for collecting core lattice metrics."""
+
+    @staticmethod
+    def calculate_metrics(lattice):
+        return {
+            "strain": compute_strain(lattice),
+            "coherence": compute_coherence(lattice),
+            "drift": _calculate_drift(lattice),
+        }
+
 def node_visit_imbalance(visit_counts):
     """
     Imbalance = max node visits / mean visits.
