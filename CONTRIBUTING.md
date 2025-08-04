@@ -8,7 +8,7 @@ Thank you for your interest in contributing to the NeuroLattice project! We welc
 
 2. **Clone Your Fork**: Clone your forked repository to your local machine using:
    ```
-   git clone https://github.com/your-username/NeuroLattice.git
+   git clone https://github.com/berigny/NeuroLattice.git
    ```
 
 3. **Create a Branch**: Create a new branch for your feature or bug fix:

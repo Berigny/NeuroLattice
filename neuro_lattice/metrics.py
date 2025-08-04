@@ -26,7 +26,6 @@ def calculate_coherence(lattice):
 
 def calculate_strain(lattice):
     """Public wrapper for :func:`compute_strain`."""
-@@ -35,42 +36,45 @@ def _calculate_drift(lattice):
 
 
 class MetricsCalculator:
@@ -37,7 +36,7 @@ class MetricsCalculator:
         return {
             "strain": compute_strain(lattice),
             "coherence": compute_coherence(lattice),
-            "drift": _calculate_drift(lattice),
+            # "drift": _calculate_drift(lattice),  # Removed undefined function
         }
 
 def node_visit_imbalance(visit_counts):

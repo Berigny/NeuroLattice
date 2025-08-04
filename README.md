@@ -1,4 +1,5 @@
 # NeuroLattice
+[![CI](https://github.com/berigny/NeuroLattice/actions/workflows/ci.yml/badge.svg)](https://github.com/berigny/NeuroLattice/actions/workflows/ci.yml)
 
 NeuroLattice is a Python package designed for simulating and analyzing lattice structures in a networked environment. This project provides tools for building various types of lattices, applying perturbations, measuring performance metrics, and visualizing the results.
 
