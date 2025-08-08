@@ -64,7 +64,7 @@ class LatticeBuilder:
 
     def _build_cubic_lattice(self):
         # Nodes in grid_3d_graph are coordinates (x, y, z)
-        base = nx.grid_graph(dim=[2, 2, 2])
+        base = nx.grid_3d_graph(2, 2, 2)
 
         # Convert to directed graph with bidirectional edges
         base = base.to_directed()

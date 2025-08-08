@@ -38,10 +38,3 @@ class PerturbationInjector:
             raise ValueError(f"Unsupported perturbation_type: {perturbation_type}")
 
         return lattice
-
-
-class PerturbationEngine(PerturbationInjector):
-    """
-    Alias for backward compatibility: use PerturbationEngine or PerturbationInjector interchangeably.
-    """
-    pass

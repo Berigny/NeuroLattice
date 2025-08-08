@@ -26,7 +26,7 @@ def calculate_coherence(lattice):
 
 def calculate_strain(lattice):
     """Public wrapper for :func:`compute_strain`."""
-    return compute_strain(lattice)
+
 
 class MetricsCalculator:
     """Utility class for collecting core lattice metrics."""
@@ -36,12 +36,8 @@ class MetricsCalculator:
         return {
             "strain": compute_strain(lattice),
             "coherence": compute_coherence(lattice),
-            "drift": _calculate_drift(lattice),
+            # "drift": _calculate_drift(lattice),  # Removed undefined function
         }
-
-def _calculate_drift(lattice):
-    """Simple drift metric: use strain as proxy."""
-    return compute_strain(lattice)
 
 def node_visit_imbalance(visit_counts):
     """

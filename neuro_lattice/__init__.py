@@ -1,9 +1,18 @@
-from .cognitive_network import CognitiveNetwork
+"""NeuroLattice package: build lattices, run routing, inject perturbations, and visualize."""
+
 from .lattice_builder import LatticeBuilder
-from .perturbation import PerturbationEngine
+from .routing_engine import RoutingEngine
+from .metrics import calculate_strain, calculate_coherence, spectral_symmetry
+from .perturbations import PerturbationInjector, PerturbationEngine
+from .visualizer import plot_lattice
 
 __all__ = [
-    "CognitiveNetwork",
     "LatticeBuilder",
+    "RoutingEngine",
+    "calculate_strain",
+    "calculate_coherence",
+    "spectral_symmetry",
+    "PerturbationInjector",
     "PerturbationEngine",
+    "plot_lattice",
 ]
