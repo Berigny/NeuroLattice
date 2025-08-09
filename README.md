@@ -85,6 +85,118 @@ codex "ping"
 
 ---
 
+## Quick start (local terminal)
+
+The following sequence cleanly restarts everything and gets the API and Streamlit UI running locally.
+
+### 0) Prerequisites (verify)
+
+```bash
+python3 --version
+which codex && codex --version
+codex login && codex "ping"
+```
+
+### 1) Python environment
+
+```bash
+# Create and activate a virtualenv (macOS/Linux)
+python3 -m venv venv
+. venv/bin/activate
+
+# Upgrade pip and install dependencies
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 2) Clean restart (optional but helpful)
+
+```bash
+# Stop any previous servers (ignore errors if none)
+pkill -f "uvicorn|streamlit" || true
+
+# Free default ports if needed (macOS)
+lsof -ti:8000,8501 | xargs kill -9 2>/dev/null || true
+
+# Ensure Codex runs in non-interactive mode (default)
+unset FORCE_PTY
+```
+
+### 3) Start the mediator API (FastAPI)
+
+```bash
+uvicorn agents.mediator_server:app --reload
+```
+
+Check:
+
+```bash
+open http://127.0.0.1:8000/health
+open http://127.0.0.1:8000/kernel
+```
+
+### 4) Start the Streamlit UI
+
+Open a new terminal/tab, activate the same virtualenv, then:
+
+```bash
+streamlit run ui/app.py
+```
+
+In the sidebar, keep Mediator URL: `http://127.0.0.1:8000`, click “Check health”, then “Run session”.
+
+### 5) CLI smoke tests (optional)
+
+```bash
+# Initialise kernel and lattice
+python cli.py init memory/brand_identity_kernel.json
+
+# Trace S1 (fast system)
+python cli.py trace --system 1 --modal visual --prompt "Amplify brand colours for spring hero."
+
+# Run an interactive S1 ↔ S2 loop
+python cli.py interactive --systems 1 2 --modal visual linguistic
+```
+
+Notes:
+- The Codex call defaults to non-PTY to work in UIs like Streamlit. For true terminals you can opt-in to PTY with `FORCE_PTY=1` in your environment.
+- Restarting servers (uvicorn/streamlit) is sufficient after code changes; a full machine restart is not required.
+
+---
+
+## Makefile shortcuts
+
+You can use the included Makefile to streamline local dev. Open two terminals (one for API, one for UI):
+
+```bash
+# One-time setup
+make venv
+make install
+
+# If a previous run is hanging
+make stop
+make ports   # force-free ports 8000/8501 (macOS)
+
+# Start services (in separate terminals)
+make api     # FastAPI mediator at http://127.0.0.1:8000
+make ui      # Streamlit UI at http://127.0.0.1:8501
+```
+
+Run `make help` to see available targets.
+
+### Dev mode (start both and tail logs)
+
+For a quick dev loop that starts both services in the background and tails their logs:
+
+```bash
+make dev
+```
+
+Notes:
+- This target stops any running uvicorn/streamlit, frees ports 8000/8501 (macOS), starts API and UI, and tails `logs/api.log` and `logs/ui.log`.
+- Press Ctrl-C to stop the tail; services keep running. Use `make stop` to stop them.
+
+
 ## First run (quick smoke test)
 
 ### 1) Trace a modal event
