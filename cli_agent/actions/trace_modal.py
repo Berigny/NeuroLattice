@@ -1,5 +1,5 @@
-def trace_modal_input(modal_name, event_key, kernel):
+def trace_modal_input(modal_name, event_key, kernel, kind="outputs"):
     modal = kernel["brand_identity_kernel"]["modal_domains"][modal_name]
-    outputs = modal["outputs"]
-    prime = outputs.get(event_key)
+    table = modal.get(kind, {})
+    prime = table.get(event_key)
     return prime

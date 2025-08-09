@@ -1,5 +1,12 @@
+fastapi
+uvicorn
+pydantic
+streamlit
+httpx
 networkx>=3.2.1
 numpy>=1.23
+rich
+setuptools
 scipy>=1.10
 matplotlib>=3.7
 pandas>=1.5

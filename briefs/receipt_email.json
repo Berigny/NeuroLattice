@@ -1,0 +1,9 @@
+{
+  "prompt": "Design the receipts email for click-and-collect.",
+  "modal": "linguistic",
+  "event": "write_in_voice",
+  "constraints": {
+    "reading_level": "Year 8",
+    "accessibility": "WCAG AA"
+  }
+}
