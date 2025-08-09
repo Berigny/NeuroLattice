@@ -16,7 +16,7 @@ help:
 	@echo "  make stop     - Stop any running uvicorn/streamlit processes"
 	@echo "  make ports    - Force-free default ports 8000/8501 (macOS)"
 	@echo "  make clean    - Remove venv"
- 	@echo "  make dev      - Start API+UI in background and tail logs"
+	@echo "  make dev      - Start API+UI in background and tail logs"
 
 $(VENV)/bin/activate: 
 	@test -d $(VENV) || python3 -m venv $(VENV)

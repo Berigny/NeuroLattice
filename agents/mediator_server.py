@@ -8,7 +8,8 @@ sys.path.append(str(pathlib.Path(__file__).resolve().parents[1]))
 from cli_agent.actions.load_kernel import load_brand_kernel
 from cli_agent.actions.trace_modal import trace_modal_input
 from cli_agent.actions.evaluate_resonance import evaluate_resonance
-from neuro_lattice.llm_interface import codex_with_brand_context
+import os
+from neuro_lattice.llm_interface import with_brand_context
 
 app = FastAPI(title="NeuroLattice Mediator")
 
@@ -76,9 +77,13 @@ def run_session(req: SessionReq) -> SessionResp:
 
     messages: List[TurnMsg] = []
 
+    # Resolve providers from env (defaults: both codex)
+    s1_provider = os.environ.get("S1_PROVIDER", "codex")
+    s2_provider = os.environ.get("S2_PROVIDER", "codex")
+
     # Turn 1: S1 proposes
     seed = f"(Prime={prime}, Resonance={resonance})\n{req.prompt}"
-    s1_text = codex_with_brand_context(f"S1: Propose an on-brand concept.\n{seed}", kernel)
+    s1_text = with_brand_context(s1_provider, f"S1: Propose an on-brand concept.\n{seed}", kernel)
     s1_strain = strain_score(prime, resonance)
     messages.append(TurnMsg(turn=1, speaker="S1", text=s1_text, strain=s1_strain, prime=prime, resonance=resonance))
 
@@ -88,7 +93,8 @@ def run_session(req: SessionReq) -> SessionResp:
         last = messages[-1].text
         role = "Critique & refine (ethical, relational, clarity)" if speaker == "S2" else "Revise proposal (concise, concrete, visual tokens)"
         prompt = f'''{role}.\nBRAND CONTEXT: {req.modal}/{req.event}, Prime={prime}, Resonance={resonance}\nLAST MESSAGE ({messages[-1].speaker}): {last}\nRespond with one short paragraph + 3 bullet improvements.'''
-        text = codex_with_brand_context(prompt, kernel)
+        provider = s2_provider if speaker == "S2" else s1_provider
+        text = with_brand_context(provider, prompt, kernel)
         s = strain_score(prime, resonance)
         msg = TurnMsg(turn=t, speaker=speaker, text=text, strain=s, prime=prime, resonance=resonance)
         messages.append(msg)

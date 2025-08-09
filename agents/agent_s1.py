@@ -1,4 +1,6 @@
-from neuro_lattice.llm_interface import codex_with_brand_context
+import os
+from neuro_lattice.llm_interface import with_brand_context
 
 def respond(context, brand_data):  # fast proposal
-    return codex_with_brand_context(f"S1 (fast, visual/somatic): {context}", brand_data)
+    provider = os.environ.get("S1_PROVIDER", "codex")
+    return with_brand_context(provider, f"S1 (fast, visual/somatic): {context}", brand_data)
