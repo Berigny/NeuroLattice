@@ -11,3 +11,4 @@ scipy>=1.10
 matplotlib>=3.7
 pandas>=1.5
 opencv-python
+pexpect>=4.9

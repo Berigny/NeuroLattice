@@ -9,7 +9,7 @@ def post(msg):
     with BUS.open(mode) as f:
         f.write(json.dumps(msg) + "\n")
 
-def run_interactive(systems, modals, brand_data, turns=3):
+def run_interactive(systems, modals, brand_data, turns=3, s2_provider: str | None = None):
     from agents import agent_s1, agent_s2
     
     system_map = {'1': agent_s1, '2': agent_s2}
@@ -29,7 +29,7 @@ def run_interactive(systems, modals, brand_data, turns=3):
         print(f"\nSystem {s1_id} (propose):\n{s1_response}")
 
         s2_prompt = f"System {s2_id} (critique): Critique the following proposal from System {s1_id}:\n{s1_response}"
-        s2_response = s2.respond(s2_prompt, brand_data)
+        s2_response = s2.respond(s2_prompt, brand_data, provider=s2_provider)
         post({"turn": turn, "system": s2_id, "action": "critique", "response": s2_response})
         print(f"\nSystem {s2_id} (critique):\n{s2_response}")
 
